@@ -1,5 +1,6 @@
 import streamlit as st
 from login.page import show_login
+from professor.page import show_professor
 
 
 def main():
@@ -9,10 +10,12 @@ def main():
     else:
         st.title("Agendamentos")
 
-        st.sidebar.selectbox(
+        menu_option = st.sidebar.selectbox(
             "Cadastrar",
-            ("Professor", "Auxiliar", "Intervalo")
+            ("Início", "Professor", "Auxiliar", "Intervalo")
         )
-
+        if menu_option == 'Professor':
+            show_professor()
+        
 if __name__ == '__main__':
     main()
