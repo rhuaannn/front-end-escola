@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 from intervalo.service import IntervaloService
 from st_aggrid import AgGrid, ExcelExportMode
-from datetime import datetime, time
+from datetime import datetime
+
 
 def show_intervalo():
     intervalo_service = IntervaloService()
@@ -28,25 +29,22 @@ def show_intervalo():
     name = st.text_input('Nome do professor')
     name_auxiliar = st.text_input('Nome do Auxiliar')
 
-    # Solicitar data e hora para o horário de entrada
-    entrada_date = st.date_input('Data do horário de entrada')
-    entrada_time = st.time_input('Horário de entrada', time(8, 0))  # Padrão para 08:00
-    entrada = datetime.combine(entrada_date, entrada_time)
+    entrada = st.date_input('Data de entrada')
+    entrada_hora = st.time_input('Hora da entrada')
+    entrada_data_hora = datetime.combine(entrada, entrada_hora)
 
-    # Solicitar data e hora para o horário do almoço
-    almoco_date = st.date_input('Data do horário do almoço')
-    almoco_time = st.time_input('Horário do almoço', time(12, 0))  # Padrão para 12:00
-    almoco = datetime.combine(almoco_date, almoco_time)
+    almoco = st.date_input('Data do almoço')
+    almoco_hora = st.time_input('Hora do almoço')
+    almoco_data_hora = datetime.combine(almoco, almoco_hora)
 
-    # Solicitar data e hora para o retorno do almoço
-    retorno_almoco_date = st.date_input('Data do retorno do almoço')
-    retorno_almoco_time = st.time_input('Horário do retorno do almoço', time(13, 0))  # Padrão para 13:00
-    retorno_almoco = datetime.combine(retorno_almoco_date, retorno_almoco_time)
+    retorno_almoco = st.date_input('Data do retorno almoco')
+    retorno_almoco_hora = st.time_input('Hora do retorno almoco')
+    retorno_almoco_data_hora = datetime.combine(
+        retorno_almoco, retorno_almoco_hora)
 
-    # Solicitar data e hora para a saída do expediente
-    saida_expediente_date = st.date_input('Data da saída do expediente')
-    saida_expediente_time = st.time_input('Horário da saída do expediente', time(17, 0))  # Padrão para 17:00
-    saida_expediente = datetime.combine(saida_expediente_date, saida_expediente_time)
+    expediente = st.date_input('Data do fim do expediente')
+    expediente_hora = st.time_input('Hora do fim do expediente')
+    expediente_data_hora = datetime.combine(expediente, expediente_hora)
 
     descricao = st.text_area('Descrição do intervalo')
 
@@ -54,10 +52,10 @@ def show_intervalo():
         new_intervalo = intervalo_service.create_intervalo(
             name=name,
             name_auxiliar=name_auxiliar,
-            entrada=entrada,
-            almoco=almoco,
-            retorno_almoco=retorno_almoco,
-            saida_expediente=saida_expediente,
+            entrada_data_hora=entrada_data_hora,
+            almoco_data_hora=almoco_data_hora,
+            retorno_almoco_data_hora=retorno_almoco_data_hora,
+            expediente_data_hora=expediente_data_hora,
             descricao=descricao
         )
         if new_intervalo:

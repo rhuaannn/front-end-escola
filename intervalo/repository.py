@@ -28,7 +28,8 @@ class IntervaloRepository:
         response = requests.post(
             self.__intervalo_url,
             headers=self.__headers,
-            data=intervalo
+            data=intervalo,
+        
         )
         if response.status_code == 201:
             return response.json()
