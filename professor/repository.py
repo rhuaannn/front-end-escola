@@ -20,16 +20,15 @@ class ProfessorRepository:
         if response.status_code == 200:
             return response.json()
         if response.status_code == 401:
-            
-            return None
-        raise Exception(f'Erro ao obter dados da API. Status code: {response.status_code}')
 
-    def create_professor(self, professor):
+            return None
+        raise Exception(f'Erro ao obter dados da API.{response.status_code}')
+
+    def create_professor(self, professor, auxiliar):
         response = requests.post(
             self.__professor_url,
             headers=self.__headers,
-            data=professor
+            data=dict(professor, auxiliar)
         )
         if response.status_code == 201:
             return response.json()
-         

@@ -1,8 +1,10 @@
+import time
 import pandas as pd
 import streamlit as st
 from intervalo.service import IntervaloService
 from st_aggrid import AgGrid, ExcelExportMode
 from datetime import datetime
+from professor.service import ProfessorService
 
 
 def show_intervalo():
@@ -26,8 +28,12 @@ def show_intervalo():
         st.warning('Nenhum intervalo encontrado.')
 
     st.title('Cadastrar Novo Intervalo')
-    name = st.text_input('Nome do professor')
-    name_auxiliar = st.text_input('Nome do Auxiliar')
+
+    professor_service = ProfessorService()
+    professores = professor_service.get_professor()
+
+    professor_names = {prof['name'] for prof in professores}
+    selected_professors = st.multiselect('Professores', list(professor_names))
 
     entrada = st.date_input('Data de entrada')
     entrada_hora = st.time_input('Hora da entrada')
@@ -37,8 +43,8 @@ def show_intervalo():
     almoco_hora = st.time_input('Hora do almoço')
     almoco_data_hora = datetime.combine(almoco, almoco_hora)
 
-    retorno_almoco = st.date_input('Data do retorno almoco')
-    retorno_almoco_hora = st.time_input('Hora do retorno almoco')
+    retorno_almoco = st.date_input('Data do retorno do almoço')
+    retorno_almoco_hora = st.time_input('Hora do retorno do almoço')
     retorno_almoco_data_hora = datetime.combine(
         retorno_almoco, retorno_almoco_hora)
 
@@ -49,17 +55,19 @@ def show_intervalo():
     descricao = st.text_area('Descrição do intervalo')
 
     if st.button('Cadastrar'):
-        new_intervalo = intervalo_service.create_intervalo(
-            name=name,
-            name_auxiliar=name_auxiliar,
-            entrada_data_hora=entrada_data_hora,
-            almoco_data_hora=almoco_data_hora,
-            retorno_almoco_data_hora=retorno_almoco_data_hora,
-            expediente_data_hora=expediente_data_hora,
-            descricao=descricao
-        )
-        if new_intervalo:
-            st.success('Intervalo cadastrado com sucesso!')
-            st.rerun()
-        else:
-            st.error('Erro ao cadastrar o Intervalo. Verifique os campos')
+        for professor_name in selected_professors:
+            new_intervalo = intervalo_service.create_intervalo(
+                professor=professor_name,
+                entrada=entrada_data_hora,
+                almoco=almoco_data_hora,
+                retorno_almoco=retorno_almoco_data_hora,
+                saida_expediente=expediente_data_hora,
+                descricao=descricao,
+            )
+            if new_intervalo:
+                st.success(
+                    f'Intervalo cadastrado com sucesso para {professor_name}!')
+                time.sleep(10)
+            else:
+                st.error('Erro ao cadastrar o Intervalo. Verifique os campos')
+        st.rerun()

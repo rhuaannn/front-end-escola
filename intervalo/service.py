@@ -1,24 +1,27 @@
+import requests
 from intervalo.repository import IntervaloRepository
 
-class IntervaloService:
 
+class IntervaloService:
     def __init__(self):
         self.intervalo_repository = IntervaloRepository()
 
     def get_intervalo(self):
         return self.intervalo_repository.get_intervalo()
 
-    def create_intervalo(self, name, name_auxiliar, entrada_data_hora, almoco_data_hora, retorno_almoco_data_hora, expediente_data_hora, descricao):
-        intervalo = {
+    def create_intervalo(self, entrada, almoco, retorno_almoco, saida_expediente, descricao, professor):
+        # Construir o payload para o POST
+        payload = {
 
-            'entrada': entrada_data_hora.strftime('%Y-%m-%dT%H:%M:%S'),
-            'almoco': almoco_data_hora.strftime('%Y-%m-%dT%H:%M:%S'),
-            'retorno_almoco': retorno_almoco_data_hora.strftime('%Y-%m-%dT%H:%M:%S'),
-            'saida_expediente': expediente_data_hora.strftime('%Y-%m-%dT%H:%M:%S'),
-            'descricao': descricao,
-            'professor': name,
-            'auxiliar': name_auxiliar
+            "entrada": entrada.strftime('%Y-%m-%dT%H:%M:%S'),
+            "almoco": almoco.strftime('%Y-%m-%dT%H:%M:%S'),
+            "retorno_almoco": retorno_almoco.strftime('%Y-%m-%dT%H:%M:%S'),
+            "saida_expediente": saida_expediente.strftime('%Y-%m-%dT%H:%M:%S'),
+            "descricao": descricao,
+            "professor": {
+                "name": professor
+            }
+
         }
-        print (intervalo)
-        return self.intervalo_repository.create_intervalo(intervalo)
-        
+        print(payload)
+        return self.intervalo_repository.create_intervalo(payload)

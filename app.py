@@ -25,6 +25,7 @@ def main():
         if menu_option == 'Intervalo':
             show_intervalo()
             
+            
 
 
 if __name__ == '__main__':
